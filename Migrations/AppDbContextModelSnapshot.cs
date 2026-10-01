@@ -30,18 +30,14 @@ namespace StudentAPI.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar(80)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar(80)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cursos");
+                    b.ToTable("Cursos", (string)null);
                 });
 
             modelBuilder.Entity("StudentAPI.Models.Disciplina", b =>
@@ -56,15 +52,13 @@ namespace StudentAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar(80)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CursoId");
 
-                    b.ToTable("Disciplinas");
+                    b.ToTable("Disciplinas", (string)null);
                 });
 
             modelBuilder.Entity("StudentAPI.Models.Estudante", b =>
@@ -79,25 +73,19 @@ namespace StudentAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("varchar(80)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Telefone")
-                        .IsRequired()
-                        .HasMaxLength(9)
-                        .HasColumnType("varchar(9)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CursoId");
 
-                    b.ToTable("Estudantes");
+                    b.ToTable("Estudantes", (string)null);
                 });
 
             modelBuilder.Entity("StudentAPI.Models.Matricula", b =>
@@ -123,7 +111,7 @@ namespace StudentAPI.Migrations
 
                     b.HasIndex("EstudanteId");
 
-                    b.ToTable("Matriculas");
+                    b.ToTable("Matriculas", (string)null);
                 });
 
             modelBuilder.Entity("StudentAPI.Models.Disciplina", b =>
