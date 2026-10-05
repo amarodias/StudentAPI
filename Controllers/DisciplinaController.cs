@@ -12,8 +12,7 @@ public int CursoId { get; set; }
 public Curso? Course { get; set; }
 }*/
 
-namespace StudentAPI.Controllers
-{
+namespace StudentAPI.Controllers;
     [Route("api/[controller]")]
     [ApiController]
     public class DisciplinaController : ControllerBase
@@ -39,7 +38,7 @@ namespace StudentAPI.Controllers
             _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
             return Ok(disciplina);       
         }
-        
+
         [HttpPost]
         public ActionResult Post (Disciplina disciplina)
         {
@@ -48,5 +47,31 @@ namespace StudentAPI.Controllers
             _context.SaveChanges();
             return new CreatedAtRouteResult("ObterDisciplina", new {id = disciplina.Id }, disciplina);
         }
+        [HttpPut("{id:int}")]
+
+        public ActionResult Put (int id, Disciplina disciplina)
+    {
+        if(disciplina.Id!=id)
+        return BadRequest("Id não identificado");
+        //Autoriza a atualização de dados
+        _context.Entry(disciplina).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        _context.SaveChanges();
+        return Ok(disciplina);
     }
-}
+
+
+    [HttpDelete("{id:int}")]
+    public ActionResult Delete (int id)
+
+    {
+        var disciplina = _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id==id);
+        if(disciplina is null) return NotFound("Não encontrado");
+        _context.Disciplinas.Remove(disciplina);
+        _context.SaveChanges();
+        return Ok("Disciplina eliminada");
+        
+    }
+
+
+    }
+
