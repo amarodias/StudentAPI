@@ -18,11 +18,8 @@ namespace StudentAPI.Controllers;
         Quem define seu valor é o front-end ou cliente que consome a API.
         */
         [HttpGet]
-        public ActionResult <IEnumerable<Estudante>> Get(Estudante estudante)
+        public ActionResult <IEnumerable<Estudante>> Get()
         {
-            if(estudante is null) {
-                return NotFound("Estudante não encontrado");
-                }
             return _context.Estudantes.ToList();
         }
 

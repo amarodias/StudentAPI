@@ -1,14 +1,16 @@
+using System.Text.Json.Serialization;
 using StudentAPI.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-Console.WriteLine(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-);
+Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 string? ConnectionStringMySQL = builder.Configuration.GetConnectionString("DefaultConnection");
