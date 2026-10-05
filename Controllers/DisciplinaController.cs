@@ -34,9 +34,17 @@ namespace StudentAPI.Controllers;
         [HttpGet("{id:int}", Name ="ObterDisciplina")]
         public ActionResult<Disciplina> Get (Disciplina disciplina, int id)
         {
-            if(disciplina is null) return NotFound("Disciplina não encontrada");
-            _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
-            return Ok(disciplina);       
+        try
+        {
+         if(disciplina is null) return NotFound("Disciplina não encontrada");
+        _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
+         return Ok(disciplina);     
+        }
+        catch(Exception)
+        {
+         return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema ao tratar a solicitação");   
+        }
+      
         }
 
         [HttpPost]
