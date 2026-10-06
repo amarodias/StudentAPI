@@ -3,19 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Context;
 using StudentAPI.Models;
 
-
-/*
-public int Id { get; set;}
-public bool? Estado { get; set; }
-[ForeignKey("Id")]
-public int EstudanteId { get; set; } 
-public Estudante? Estudante { get; set; }
- public int DisciplinaId { get; set; } 
- public Disciplina? Discipline { get; set; }
-*/
 namespace StudentAPI.Controllers;
 
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] //Gera a rota /api/matricula
     [ApiController]
     public class MatriculaController : ControllerBase
     {
@@ -30,7 +20,10 @@ namespace StudentAPI.Controllers;
         public ActionResult<IEnumerable<Matricula>> Get()
         {
             return _context.Matriculas.ToList();
+          
+
         }
+        // api/matricula/id
         [HttpGet("{id:int}", Name = "ObterMatricula")]
         public ActionResult Get(int id)
         {
