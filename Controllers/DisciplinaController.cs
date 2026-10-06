@@ -27,24 +27,24 @@ namespace StudentAPI.Controllers;
         public ActionResult<IEnumerable<Disciplina>> Get(Disciplina disciplina)
         {
             if(disciplina is null)
-            return NotFound("Disciplina não encontrada");
+            return NotFound("A disciplina não existe");
             return _context.Disciplinas.ToList();
         }
 
         [HttpGet("{id:int}", Name ="ObterDisciplina")]
-        public ActionResult<Disciplina> Get (Disciplina disciplina, int id)
+        public ActionResult<Disciplina> Get (int id)
         {
-        try
-        {
-         if(disciplina is null) return NotFound("Disciplina não encontrada");
-        _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
-         return Ok(disciplina);     
+            try{  
+        var disciplina = _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
+        return Ok(disciplina);
+              
         }
+        
         catch(Exception)
         {
          return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema ao tratar a solicitação");   
         }
-      
+       
         }
 
         [HttpPost]
