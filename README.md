@@ -1,2 +1,3 @@
 Esta é uma Web API que segue o padrão REST em processo de implementação. Basicamente está a ser desenvolvida no ambiente .NET 9 com os frameworks ASP.NET Core e Entity Framework Core que serve de ponte de comunicação com o SGBD MySQL usando comandos nativos da linguagem C#.
 Esta API consiste num sistema de Gestão de Estudantes. Posteriormente tratarei das requisições http ao longo do do desenvolvimento da API.
+A SGBD utilizada durante o processo de documentação foi o MySQL.
