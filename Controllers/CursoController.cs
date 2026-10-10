@@ -16,9 +16,11 @@ namespace StudentAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult <IEnumerable<Curso>> Get()
+        public async Task<ActionResult <IEnumerable<Curso>>> Get()
         {
-            var cursos = _context.Cursos.ToList();
+
+            //O await libera a thread enquanto enquantos o banco de dados faz consultas
+            var cursos = await _context.Cursos.ToListAsync();
             if(cursos is null)
             return NotFound();
             else return Ok(cursos);

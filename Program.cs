@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using StudentAPI.Context;
+using StudentAPI.Services;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<StudentAPI.Context.AppDbContext>(options =>
         ConnectionStringMySQL,
         ServerVersion.AutoDetect(ConnectionStringMySQL)
     ));
+    builder.Services.AddTransient<IMeuServico, MeuServico>();
 
 var app = builder.Build();
 
