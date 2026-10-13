@@ -9,7 +9,7 @@ public class Estudante
     [ Key ]
 public int Id { get; set; }
 
-[Required]
+[Required(ErrorMessage = "O nome é obrigatório")]
 [StringLength(80)]
 public string? Nome { get; set; }
 

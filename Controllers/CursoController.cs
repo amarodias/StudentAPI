@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Context;
 using StudentAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentAPI.Controllers
 {

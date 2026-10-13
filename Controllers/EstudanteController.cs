@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Context;
 using StudentAPI.Models;
+using StudentAPI.Services;
 
 namespace StudentAPI.Controllers;
     [Route("api/[controller]")]
@@ -17,6 +18,11 @@ namespace StudentAPI.Controllers;
         /*api/estudante/{id} a variável id é do tipo inteiro, e o nome do endpoint é GetEstudante.
         Quem define seu valor é o front-end ou cliente que consome a API.
         */
+        [HttpGet("UsarFromServices/{nome}")]
+        public ActionResult <string> saudacaoFromServices ([FromServices] MeuServico meuservico, string nome)
+    {
+        return meuservico.saudacao(nome);
+    }
         [HttpGet]
         public ActionResult <IEnumerable<Estudante>> Get()
         {
