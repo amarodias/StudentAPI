@@ -2,15 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Models;
 using StudentAPI.Context;
-
-/*public class Disciplina
-{
-
-public int Id { get; set; }
-public string? Nome { get; set; }
-public int CursoId { get; set; }
-public Curso? Course { get; set; }
-}*/
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentAPI.Controllers;
     [Route("api/[controller]")]
@@ -24,58 +16,64 @@ namespace StudentAPI.Controllers;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Disciplina>> Get(Disciplina disciplina)
+        public async Task<ActionResult<IEnumerable<Disciplina>>> Get()
         {
-            if(disciplina is null)
-            return NotFound("A disciplina não existe");
-            return _context.Disciplinas.ToList();
+            var subjects =  await _context.Disciplinas.ToListAsync();
+            if(!subjects.Any())
+            return NotFound("Disciplinas não encontradas.");
+            return Ok(subjects);
         }
 
         [HttpGet("{id:int}", Name ="ObterDisciplina")]
-        public ActionResult<Disciplina> Get (int id)
+        public async Task<ActionResult<Disciplina>> Get (int id)
         {
-            try{  
-        var disciplina = _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id ); 
-        return Ok(disciplina);
-              
-        }
-        
-        catch(Exception)
-        {
-         return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um problema ao tratar a solicitação");   
-        }
+ 
+        var subject = await _context.Disciplinas.FirstOrDefaultAsync(disciplina => disciplina.Id == id ); 
+        if(subject is null)
+        return NotFound("Disciplina não encontrada");
+        return Ok(subject);
        
         }
 
         [HttpPost]
-        public ActionResult Post (Disciplina disciplina)
+        public async Task<ActionResult> Post (Disciplina subject)
         {
-            if(disciplina is null) return BadRequest("Péssima requisição\n");
-            _context.Disciplinas.Add(disciplina);
-            _context.SaveChanges();
-            return new CreatedAtRouteResult("ObterDisciplina", new {id = disciplina.Id }, disciplina);
+          if(subject is null) 
+             return BadRequest("Péssima requisição\n");
+             await _context.Disciplinas.AddAsync(subject);
+             await _context.SaveChangesAsync();
+             return new CreatedAtRouteResult("ObterDisciplina", new {id = subject.Id }, subject);
         }
-        [HttpPut("{id:int}")]
 
-        public ActionResult Put (int id, Disciplina disciplina)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put (int id, Disciplina subject)
     {
-        if(disciplina.Id!=id)
+        if(subject.Id!=id)
         return BadRequest("Id não identificado");
+       
+        var sub = await _context.Disciplinas.AnyAsync(sub => sub.Id == id);
+
+        if(!sub)
+        return NotFound("Disciplina não encontrada");
+
         //Autoriza a atualização de dados
-        _context.Entry(disciplina).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-        _context.SaveChanges();
-        return Ok(disciplina);
+        _context.Entry(subject).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return Ok(subject);
     }
 
 
     [HttpDelete("{id:int}")]
-    public ActionResult Delete (int id)
+    public async Task<ActionResult> Delete (int id)
 
     {
-        var disciplina = _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id==id);
-        if(disciplina is null) return NotFound("Não encontrado");
-        _context.Disciplinas.Remove(disciplina);
-        _context.SaveChanges();
+        var subject = await _context.Disciplinas.FirstOrDefaultAsync(disciplina => disciplina.Id==id);
+       
+        if(subject is null) return NotFound("Não encontrado");
+
+        _context.Disciplinas.Remove(subject);
+        await _context.SaveChangesAsync();
+
         return Ok("Disciplina eliminada");
         
     }
