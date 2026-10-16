@@ -51,7 +51,7 @@ namespace StudentAPI.Controllers;
     }
 
 
-    [HttpPut("{id: int}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult> Put (int id, Curso curso)
     {
         if(id != curso.Id)
@@ -66,7 +66,7 @@ namespace StudentAPI.Controllers;
   
     }
 
-    [HttpDelete("{id: int}")]
+    [HttpDelete("{id:int}")]
     public async Task <ActionResult> Delete (int id)
     {
        var curso = await _context.Cursos.FindAsync(id);
