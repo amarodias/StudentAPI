@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentAPI.Context;
 using StudentAPI.Models;
 
@@ -17,49 +18,48 @@ namespace StudentAPI.Controllers;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Matricula>> Get()
+        public async Task<ActionResult<IEnumerable<Matricula>>> Get()
         {
-            return _context.Matriculas.ToList();
-          
-
+            return await _context.Matriculas.ToListAsync();
         }
-        // api/matricula/id
+
+
         [HttpGet("{id:int}", Name = "ObterMatricula")]
-        public ActionResult Get(int id)
+        public async Task<ActionResult<Matricula>> Get(int id)
         {
-           var matricula = _context.Matriculas.FirstOrDefault(matricula => matricula.Id == id);
+           var matricula = await _context.Matriculas.FirstOrDefaultAsync(matricula => matricula.Id == id);
            if(matricula is null) return NotFound("A matrícula não existe");
            return Ok(matricula);
 
         }
     [HttpPost]
-    public ActionResult Post (Matricula matricula)
+    public async Task<ActionResult> Post (Matricula matricula)
         {
             if(matricula is null) return BadRequest();
-            _context.Matriculas.Add(matricula);
-            _context.SaveChanges();
+            await _context.Matriculas.AddAsync(matricula);
+            await _context.SaveChangesAsync();
             return new CreatedAtRouteResult("ObterMatricula", new {id = matricula.Id}, matricula);
         
         }
 
      [HttpPut("{id:int}")]
-     public ActionResult Put (Matricula matricula, int id)
+     public async Task<ActionResult> Put (Matricula matricula, int id)
     {
         if(id == matricula.Id)
         if(matricula is null) return BadRequest("Dados inválidados");
         
-          _context.Matriculas.Entry(matricula).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-          _context.SaveChanges();
-          return Ok(matricula);
+        _context.Matriculas.Entry(matricula).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return Ok(matricula);
      }  
 
     [HttpDelete("{id:int}")] 
-    public ActionResult Delete (int id)
+    public async Task <ActionResult> Delete (int id)
     {
         var matricula = _context.Matriculas.FirstOrDefault(matricula => matricula.Id == id);
         if(matricula is null) return NotFound("Matrícula não encontrada");
         _context.Matriculas.Remove(matricula);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return Ok("Matrícula eliminada");
     }
     }
