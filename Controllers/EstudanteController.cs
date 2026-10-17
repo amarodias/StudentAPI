@@ -11,8 +11,10 @@ namespace StudentAPI.Controllers;
     public class EstudanteController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public EstudanteController(AppDbContext context)
+        private readonly IConfiguration _config;
+        public EstudanteController(AppDbContext context, IConfiguration config)
         {
+            _config = config;
             _context = context;
         }
         //Primeiro endpoint para listar todos os estudantes

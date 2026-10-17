@@ -14,8 +14,9 @@ public int Id { get; set; }
 public string? Nome { get; set; }
 
 [Required]
-[StringLength(40)]
-public string? Email { get; set; } //Email institucional
+[StringLength(18)]
+[EmailAddress]
+public string? Email { get; set; } 
 
 [Required]
 [StringLength(9)]
