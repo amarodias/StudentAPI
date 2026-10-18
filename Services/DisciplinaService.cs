@@ -36,7 +36,7 @@ public async Task <Disciplina?> AtualizarAsync (int id, Disciplina disciplina)
         await _context.SaveChangesAsync();
         return disciplina;   
     } 
-public async Task <bool?> DeletarAsync(int id)
+public async Task <bool> DeletarAsync(int id)
     {
         var disciplina = _context.Disciplinas.FindAsync(id);
         _context.Remove(disciplina);
