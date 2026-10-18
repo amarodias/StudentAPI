@@ -53,7 +53,7 @@ namespace StudentAPI.Controllers;
         }
     }
 
-        [HttpPut("{id:int}")]
+  /*      [HttpPut("{id:int}")]
         public async Task<ActionResult> Put (int id, Disciplina subject)
     {
 
@@ -66,7 +66,7 @@ namespace StudentAPI.Controllers;
     {
  
         
-    }
+    }*/
 
 
     }

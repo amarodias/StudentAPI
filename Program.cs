@@ -21,7 +21,10 @@ builder.Services.AddDbContext<StudentAPI.Context.AppDbContext>(options =>
         ConnectionStringMySQL,
         ServerVersion.AutoDetect(ConnectionStringMySQL)
     ));
- builder.Services.AddTransient<IEstudanteService, EstudanteService>();
+builder.Services.AddTransient<IEstudanteService, EstudanteService>();
+builder.Services.AddTransient<ICursoService, CursoService>();
+builder.Services.AddTransient<IDisciplinaService, DisciplinaService>();
+ builder.Services.AddTransient<IMatriculaService, MatriculaService>();
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ namespace StudentAPI.Services;
 public interface IMatriculaService
 
 {
-    Task <IEnumerable<Matricula?>> ListarMatriculasAsync();
+    Task <IEnumerable<Matricula>> ListarMatriculasAsync();
     Task <Matricula?> ObterPeloIdAsync(int id);
     Task <Matricula?> CriarAsync(Matricula matricula);
     Task <Matricula?> AtualizarAsync (int id, Matricula matricula);
