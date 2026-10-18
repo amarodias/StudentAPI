@@ -58,8 +58,7 @@ namespace StudentAPI.Controllers;
         }
 
     }
-
-
+    
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Put (int id, Curso curso, ICursoService cursoService)
     {
