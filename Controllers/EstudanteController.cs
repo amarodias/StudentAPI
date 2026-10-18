@@ -17,34 +17,54 @@ namespace StudentAPI.Controllers;
             _config = config;
             _context = context;
         }
-        //Primeiro endpoint para listar todos os estudantes
-        /*api/estudante/{id} a variável id é do tipo inteiro, e o nome do endpoint é GetEstudante.
-        Quem define seu valor é o front-end ou cliente que consome a API.
-        */
-        [HttpGet("UsarFromServices/{nome}")]
+
+  /*      [HttpGet("UsarFromServices/{nome}")]
         public async Task<ActionResult <string> > saudacaoFromServices ([FromServices] MeuServico meuservico, string nome)
     {
         return meuservico.saudacao(nome);
-    }
+    }*/
+        
         [HttpGet]
-        public ActionResult <IEnumerable<Estudante>> Get()
+        public async Task<ActionResult <IEnumerable<Estudante>>> Get(IEstudanteService estudanteService)
         {
-            return  _context.Estudantes.ToList();
+            var estudantes = await estudanteService.ListarTodosAsync();
+            return Ok(estudantes);
+
         }
 
         [HttpGet("{id:int}", Name = "GetEstudante")]
-        public async Task <ActionResult<Estudante>> Get (int id){
-        var estudante = _context.Estudantes.FirstOrDefaultAsync(estudante => estudante.Id == id);if(estudante is null || id!=estudante.Id)return NotFound("Estudante não encontrado");
-            return Ok(estudante);
+        public async Task <ActionResult<Estudante>> Get (int id, IEstudanteService estudanteService){
+        var estudante = await estudanteService.BuscarPorIdAsync(id);
+            if(estudante is null) 
+                return NotFound("Estudante não encontrado");
+                return Ok(estudante);
     }
     [HttpPost]
-    public async Task<ActionResult> Post  (Estudante estudante)
-
+    public async Task<ActionResult> Post (Estudante estudante, IEstudanteService estudanteService)
     {
         if(estudante is null) return BadRequest("Dados inválidos");
-        await _context.Estudantes.AddAsync(estudante);
-        await _context.SaveChangesAsync();
-        return new CreatedAtRouteResult("GetEstudante", new {id = estudante.Id}, estudante);
+        try
+        {
+           var e = await estudanteService.CriarAsync(estudante);
+           if (e is null) return Problem(
+            detail: "Não possível registrar o estudante no Sistema.",
+            statusCode: 500,
+            title: "Falha na Criação"
+           );
+           return new CreatedAtRouteResult ("GetEstudante", new {id = e.Id}, e);
+        }
+        catch(Exception e)
+        {
+
+            return Problem(
+                detail: "Ocorreu um erro interno ao tentar processar o registro",
+                statusCode: 500,
+                title: "Erro interno"
+            );
+            
+        }
+    
+
     }
 
     [HttpPut("{id:int}")]
@@ -57,8 +77,7 @@ namespace StudentAPI.Controllers;
     await _context.SaveChangesAsync();
     return Ok(estudante);
     } 
-/*Att caso eu queira fazer uma atualização parcial do estudante,
- devo usar o PATCH para atualizar apenas alguns campos do estudante*/
+
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
