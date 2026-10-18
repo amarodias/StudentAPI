@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StudentAPI.Context;
 using StudentAPI.Models;
+using StudentAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace StudentAPI.Controllers;
     [Route("api/[controller]")]
@@ -17,67 +19,60 @@ namespace StudentAPI.Controllers;
         }
 
         [HttpGet]
-        public async Task<ActionResult <IEnumerable<Curso>>> Get()
-        {
-
-            //O await libera a thread enquanto enquantos o banco de dados faz consultas
-            var cursos = await _context.Cursos.ToListAsync();
-            if(!cursos.Any())
-            return NotFound("Nenhum curso encontrado");
-            return Ok(cursos);
-        
+        public async Task<ActionResult <IEnumerable<Curso>>> Get(ICursoService cursoService)
+        {  
+           var cursos = await cursoService.ListarCursosAsync();
+           if(cursos is null) return NotFound("Não há cursos disponíveis");
+           return Ok(cursos);
         }
 
-        //Um Id único!
         [HttpGet("{id:int}", Name = "ObterCurso")]
-        public async Task<ActionResult<Curso>> Get(int id)
+        public async Task<ActionResult<Curso>> Get(int id, ICursoService cursoService)
         {
-         var curso = await _context.Cursos.FirstOrDefaultAsync(curso => curso.Id == id);
-         if(curso is null)
-          return NotFound("Nenhum curso encontrado");
-
-         return Ok(curso);
+            var curso = await cursoService.ObterCursoPeloIdAsync(id);
+            if (curso is null) return NotFound("O curso não existe");
+            return Ok(curso);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post (Curso curso)
+        public async Task<ActionResult> Post (Curso curso, ICursoService cursoService)
     {
-        if(curso is null) return BadRequest("O body do request não é válido");
-        await _context.Cursos.AddAsync(curso);
-        await _context.SaveChangesAsync();
-        
-        return new CreatedAtRouteResult("ObterCurso", new {id = curso.Id}, curso);
-        //return Ok($"Curso de {curso} adicionado com sucesso");
+        if (curso is null) return BadRequest("Dados inválidos");
+        try
+        {
+         var novo = await cursoService.CriarAsync(curso);
+         if(novo is null) return Problem(
+            detail : "Erro ao criar",
+            statusCode: 500,
+            title: "Erro Interno de Servidor"
+         );
+         return new CreatedAtRouteResult ("ObterCurso", new{id = novo.Id}, novo);
+        }
+        catch (Exception)
+        {
+           return Problem(
+            detail : "Erro ao criar",
+            statusCode: 500,
+            title: "Erro Interno de Servidor"
+         ); 
+        }
+
     }
 
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Put (int id, Curso curso)
+    public async Task<ActionResult> Put (int id, Curso curso, ICursoService cursoService)
     {
-        if(id != curso.Id)
-        return BadRequest("O id do não existe");
-        var cursoExistente = _context.Cursos.FirstOrDefaultAsync(curso => curso.Id == id);
-        if(cursoExistente is null)
-        return NotFound("O curso não existe");
-     _context.Entry(curso).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-     await _context.SaveChangesAsync();
-     return Ok($"Dados do curso de {curso.Nome} atualizado com sucesso");
-        
-  
+        if (curso is null) return BadRequest("Dados Inválidos"); 
+        var atualizar = await cursoService.AtualizarAsync(id, curso);
+        return Ok($"Curso de {atualizar?.Nome} atualizado");
     }
 
     [HttpDelete("{id:int}")]
-    public async Task <ActionResult> Delete (int id)
+    public async Task <ActionResult> Delete (int id, ICursoService cursoService)
     {
-       var curso = await _context.Cursos.FindAsync(id);
-       if(curso is null) return NotFound($"Curso com id {id} não existe");
-       else 
-     _context.Cursos.Remove(curso);
-     await _context.SaveChangesAsync();
-       return Ok($"Eliminação de {curso.Nome} realizada com sucesso");
+        var Deletado = await cursoService.EliminarAsync(id);
+        if(!Deletado) return NotFound("Curso não encontrado");
+        return Ok($"Curso de deletado");
     }
-
-
-
-    }
-
+}
