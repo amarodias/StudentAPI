@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +18,6 @@ namespace StudentAPI.Controllers;
             _config = config;
             _context = context;
         }
-
-  /*      [HttpGet("UsarFromServices/{nome}")]
-        public async Task<ActionResult <string> > saudacaoFromServices ([FromServices] MeuServico meuservico, string nome)
-    {
-        return meuservico.saudacao(nome);
-    }*/
         
         [HttpGet]
         public async Task<ActionResult <IEnumerable<Estudante>>> Get(IEstudanteService estudanteService)
@@ -53,13 +48,13 @@ namespace StudentAPI.Controllers;
            );
            return new CreatedAtRouteResult ("GetEstudante", new {id = e.Id}, e);
         }
-        catch(Exception e)
+        catch(Exception)
         {
 
             return Problem(
                 detail: "Ocorreu um erro interno ao tentar processar o registro",
                 statusCode: 500,
-                title: "Erro interno"
+                title: "Erro Interno"
             );
             
         }
@@ -68,28 +63,41 @@ namespace StudentAPI.Controllers;
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Put(int id, Estudante estudante) {
-    //Verifcar se o id do estudante é diferente do id passado na URL
-    if(id != estudante.Id) 
-    return BadRequest();
-    //Efetivar a atualização do estudante no banco de dados
-    _context.Entry(estudante).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-    await _context.SaveChangesAsync();
-    return Ok(estudante);
-    } 
+public async Task <ActionResult> Put (int id, Estudante estudante, IEstudanteService estudanteService)
+    {
+        if(estudante is null) return BadRequest("Dados Inválidos");
+        try
+        {
+            var e = await estudanteService.AtualizarAsync(id, estudante);
+            if(e is null)
+            return Problem(
+              detail: "Erro ao atualizar",
+              statusCode: 500,
+              title: "Erro de Servidor"  
+            );
+            else return Ok(e);
+        }
+        catch(Exception)
+        {
+            return Problem(
+                detail: "Erro ao atualizar",
+                statusCode: 500,
+                title: "Erro de Servidor"
+
+            );
+        }
+    }
 
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> Delete(int id)
+public async Task <ActionResult>  Delete(int id, IEstudanteService estudanteService)
     {
- var estudante = _context.Estudantes.FirstOrDefault(estudante => estudante.Id == id);
-    if(estudante is null) return NotFound("Estudante não encontrado");
-    _context.Estudantes.Remove(estudante);
-    await _context.SaveChangesAsync();
-    return Ok("Estudante removido com sucesso");
- 
+        var e = await estudanteService.EliminarAsync(id);
+        if(!e) return NotFound("Estudante não encontrado.");
+        else return Ok("Estudante removido com sucesso.");
 
     }
-                
-    }
 
+   
+
+    }
