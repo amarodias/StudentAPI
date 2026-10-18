@@ -2,7 +2,6 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StudentAPI.Context;
 using StudentAPI.Models;
 using StudentAPI.Services;
 
@@ -11,13 +10,6 @@ namespace StudentAPI.Controllers;
     [ApiController]
     public class EstudanteController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-        public EstudanteController(AppDbContext context, IConfiguration config)
-        {
-            _config = config;
-            _context = context;
-        }
         
         [HttpGet]
         public async Task<ActionResult <IEnumerable<Estudante>>> Get(IEstudanteService estudanteService)
