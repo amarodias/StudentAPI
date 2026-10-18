@@ -14,7 +14,7 @@ public MatriculaService(AppDbContext context)
         _context = context;
     }
 
-public async Task <IEnumerable<Matricula>> ListarMatriculaAsync()
+public async Task <IEnumerable<Matricula>> ListarMatriculasAsync()
     {
        var matriculas = await _context.Matriculas.ToListAsync();
        return matriculas;
