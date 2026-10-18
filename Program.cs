@@ -21,7 +21,7 @@ builder.Services.AddDbContext<StudentAPI.Context.AppDbContext>(options =>
         ConnectionStringMySQL,
         ServerVersion.AutoDetect(ConnectionStringMySQL)
     ));
-    builder.Services.AddTransient<IMeuServico, MeuServico>();
+   // builder.Services.AddTransient<IMeuServico, MeuServico>();
 
 var app = builder.Build();
 
