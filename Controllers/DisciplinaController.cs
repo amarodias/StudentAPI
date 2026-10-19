@@ -10,8 +10,13 @@ namespace StudentAPI.Controllers;
     [ApiController]
     public class DisciplinaController : ControllerBase
     {
+        private readonly IDisciplinaService disciplinaService;
+        public DisciplinaController(IDisciplinaService _disciplinaService)
+    {
+     disciplinaService = _disciplinaService;   
+    }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Disciplina>>> Get(IDisciplinaService disciplinaService)
+        public async Task<ActionResult<IEnumerable<Disciplina>>> Get()
         {
             var disciplinas = await disciplinaService.ListarDisciplinaAsync();
             if(disciplinas is null) return NotFound("Não foram encontradas disciplinas");
@@ -20,7 +25,7 @@ namespace StudentAPI.Controllers;
         }
 
         [HttpGet("{id:int}", Name ="ObterDisciplina")]
-        public async Task<ActionResult<Disciplina>> Get (int id, IDisciplinaService disciplinaService)
+        public async Task<ActionResult<Disciplina>> Get (int id)
     {
         var disciplina = await disciplinaService.ObterPeloIdAsync(id);
         if(disciplina is null) return NotFound("Disciplina não encontrada");
@@ -29,7 +34,7 @@ namespace StudentAPI.Controllers;
     }
 
         [HttpPost]
-        public async Task<ActionResult> Post (Disciplina subject, IDisciplinaService disciplinaService)
+        public async Task<ActionResult> Post (Disciplina subject)
     {
         if(subject is null) return BadRequest("Dados Inválidos");
         try{ 
@@ -53,21 +58,23 @@ namespace StudentAPI.Controllers;
         }
     }
 
-  /*      [HttpPut("{id:int}")]
-        public async Task<ActionResult> Put (int id, Disciplina subject)
+[HttpPut("{id:int}")]
+public async Task<ActionResult> Put (int id, Disciplina disciplina)
     {
+        if(disciplina is null) return BadRequest();
+        var subject = await disciplinaService.AtualizarAsync(id, disciplina);
+        return Ok(subject);
+    }
+    
+[HttpDelete("{id:int}")]
+public async Task<ActionResult> Delete(int id) 
+
+{
+    var deletado = await disciplinaService.DeletarAsync(id);
+    if(!deletado)
+    return NotFound("A disciplina não existe");
+    return Ok("Deletado com sucesso");
+}
+
 
     }
-
-
-    [HttpDelete("{id:int}")]
-    public async Task<ActionResult> Delete (int id)
-
-    {
- 
-        
-    }*/
-
-
-    }
-
