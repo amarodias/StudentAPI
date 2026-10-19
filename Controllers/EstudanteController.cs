@@ -10,9 +10,14 @@ namespace StudentAPI.Controllers;
     [ApiController]
     public class EstudanteController : ControllerBase
     {
+        private readonly IEstudanteService estudanteService;
+        public EstudanteController(IEstudanteService _estudanteService)
+    {
+        estudanteService = _estudanteService;     
+    }
         
         [HttpGet]
-        public async Task<ActionResult <IEnumerable<Estudante>>> Get(IEstudanteService estudanteService)
+        public async Task<ActionResult <IEnumerable<Estudante>>> Get()
         {
             var estudantes = await estudanteService.ListarTodosAsync();
             return Ok(estudantes);
@@ -20,14 +25,14 @@ namespace StudentAPI.Controllers;
         }
 
         [HttpGet("{id:int}", Name = "GetEstudante")]
-        public async Task <ActionResult<Estudante>> Get (int id, IEstudanteService estudanteService){
+        public async Task <ActionResult<Estudante>> Get (int id){
         var estudante = await estudanteService.BuscarPorIdAsync(id);
             if(estudante is null) 
                 return NotFound("Estudante não encontrado");
                 return Ok(estudante);
     }
     [HttpPost]
-    public async Task<ActionResult> Post (Estudante estudante, IEstudanteService estudanteService)
+    public async Task<ActionResult> Post (Estudante estudante)
     {
         if(estudante is null) return BadRequest("Dados inválidos");
         try
@@ -55,7 +60,7 @@ namespace StudentAPI.Controllers;
     }
 
     [HttpPut("{id:int}")]
-public async Task <ActionResult> Put (int id, Estudante estudante, IEstudanteService estudanteService)
+public async Task <ActionResult> Put (int id, Estudante estudante)
     {
         if(estudante is null) return BadRequest("Dados Inválidos");
         try
@@ -82,7 +87,7 @@ public async Task <ActionResult> Put (int id, Estudante estudante, IEstudanteSer
 
 
     [HttpDelete("{id:int}")]
-public async Task <ActionResult>  Delete(int id, IEstudanteService estudanteService)
+public async Task <ActionResult>  Delete(int id)
     {
         var e = await estudanteService.EliminarAsync(id);
         if(!e) return NotFound("Estudante não encontrado.");

@@ -76,5 +76,4 @@ public async Task<ActionResult> Delete(int id)
     return Ok("Deletado com sucesso");
 }
 
-
-    }
+}
