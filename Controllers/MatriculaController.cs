@@ -38,7 +38,7 @@ public async Task<ActionResult> Post(Matricula matricula)
         return BadRequest("Dados Inválidos");
         var aux = await _matriculaService.CriarAsync(matricula);
         if(aux is null) return Problem(
-            detail : "Erro ao confirmar matrícula", statusCode : "500", title: "Erro de Servidor"
+            detail : "Erro ao confirmar matrícula", statusCode : 500, title: "Erro de Servidor"
         );
         return Ok(aux);
 
